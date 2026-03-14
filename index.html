@@ -863,11 +863,13 @@ function renderGrid(filter){
   }
   var isAdv=filter==='advanced';
   items.forEach(function(anim,idx){
-    var fullyLocked=isAdv&&!unlocked&&!peeking;
-    var pixelate=isAdv&&!unlocked&&peeking;
+    /* Per-item: anim is advanced if it has a sub property (all ADVANCED items do) */
+    var animIsAdv=anim.tag==='advanced';
+    var fullyLocked=animIsAdv&&!unlocked&&!peeking;
+    var pixelate=animIsAdv&&!unlocked&&peeking;
     var textBlur=fullyLocked?' blurred':(pixelate?' pixelated':'');
     var card=document.createElement('div');
-    card.className='card'+(isAdv?' adv-card':'')+(isAdv&&unlocked?' unlocked-card':'');
+    card.className='card'+(animIsAdv?' adv-card':'')+(animIsAdv&&unlocked?' unlocked-card':'');
     card.setAttribute('data-id',anim.id);
     card.innerHTML=
       '<div class="card-tag"><span class="accent-dot" style="background:'+anim.accent+'"></span>'+
@@ -876,7 +878,7 @@ function renderGrid(filter){
       '<div class="card-desc'+textBlur+'">'+anim.desc+'</div>'+
       '<div class="stage" id="stage-'+anim.id+'"><span class="stage-hint">tap</span></div>'+
       /* Only show code toggle when: free animation, OR advanced + unlocked */
-      ((!isAdv||unlocked)?
+      ((!animIsAdv||unlocked)?
         '<button class="code-toggle" id="codetog-'+anim.id+'">{ } View Code</button>'+
         '<div class="code-panel" id="code-'+anim.id+'">'+
           '<div class="code-header"><span class="code-lang">JS + CSS</span><button class="copy-btn" id="copybtn-'+anim.id+'">Copy</button></div>'+
